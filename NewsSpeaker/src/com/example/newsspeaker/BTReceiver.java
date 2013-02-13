@@ -14,29 +14,22 @@ public class BTReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		this.abortBroadcast();
-		
+
 		MainActivity mainActivity = (MainActivity)context;
 		KeyEvent key = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-		switch(key.getKeyCode()){
-		case 85:
-			mainActivity.selectChannel();
-			break;
-		case 87:
-			mainActivity.zapping(-1);
-			break;
-		case 88:
-			mainActivity.zapping(1);
-			break;
-		}
-		/*
-		handler.post(new Runnable() {
-			public void run() {
-				KeyEvent key = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-				Toast.makeText(context, intent.getAction()+" "+key.getAction()+" "+key.getKeyCode(), Toast.LENGTH_SHORT)
-						.show();
+		if(key.getAction()==KeyEvent.ACTION_UP){
+			switch(key.getKeyCode()){
+			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+				mainActivity.selectChannel();
+				break;
+			case KeyEvent.KEYCODE_MEDIA_NEXT:
+				mainActivity.zapping(1);
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+				mainActivity.zapping(-1);
+				break;
 			}
-		});
-		*/
+		}
 	}
 
 	public void registerSelf(Context context) {
