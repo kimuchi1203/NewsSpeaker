@@ -36,12 +36,13 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
 		channelList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 		channels = new ArrayList<Channel>();
-		channels.add(new Channel("reuters", "http://feeds.reuters.com/reuters/JPTopNews", this));
+		channels.add(new Channel("Reuters", "http://feeds.reuters.com/reuters/JPTopNews", this));
 		channelList.add("reuters");
+		channels.add(new Channel("Google News", "http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss", this));
+		channelList.add("Google News");
 		currentChannelId = 0;
         
-		ListView lv = (ListView) findViewById(R.id.listView1);
-		lv.setAdapter(channelList);
+		showList();
 	}
 
 	@Override
@@ -83,10 +84,20 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 		}
 	}
 	
+	private void showList() {
+		ListView lv = (ListView) findViewById(R.id.listView1);
+		lv.setAdapter(channelList);
+	}
+	
 	public void zapping(int i) {
+		showList();
+		Log.d("MainActivity#zapping", "currentChannelId "+currentChannelId+" i "+i+" -> "+(currentChannelId+i)%channelList.getCount());
 		currentChannelId = (currentChannelId+i)%channelList.getCount();
+		if(currentChannelId<0) {
+			currentChannelId = channelList.getCount() + currentChannelId;
+		}
 		if(ttsReady) mTts.speak(channelList.getItem(currentChannelId), TextToSpeech.QUEUE_FLUSH, null);
-		Log.d("MainActivity#zapping", channelList.getItem(currentChannelId%channelList.getCount()));
+		Log.d("MainActivity#zapping", channelList.getItem(currentChannelId));
 	}
 	
 	public void selectChannel() {
