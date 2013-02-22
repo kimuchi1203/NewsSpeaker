@@ -21,7 +21,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 	private TextToSpeech mTts;
 	private ArrayAdapter<String> channelList;
 	private ArrayList<Channel> channels;
-	private int currentChannelId;
+	public int currentChannelId;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,12 +36,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
 		channelList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 		channels = new ArrayList<Channel>();
-		channels.add(new Channel("Reuters", "http://feeds.reuters.com/reuters/JPTopNews", this));
+		channels.add(new XMLChannel("Reuters", "http://feeds.reuters.com/reuters/JPTopNews", this));
 		channelList.add("reuters");
-		channels.add(new Channel("Google News", "http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss", this));
+		channels.add(new XMLChannel("Google News", "http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss", this));
 		channelList.add("Google News");
+		channels.add(new PlainChannel("Reuters", "http://citrus-unshiu.appspot.com/plain?stream_name=reuters", this));
+		channelList.add("Reuters plain");
 		currentChannelId = 0;
         
+		((ListView) findViewById(R.id.listView1)).setOnItemClickListener(new ClickEvent(this));
 		showList();
 	}
 
