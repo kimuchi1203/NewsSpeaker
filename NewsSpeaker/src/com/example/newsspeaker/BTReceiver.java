@@ -20,13 +20,13 @@ public class BTReceiver extends BroadcastReceiver {
 		if(key.getAction()==KeyEvent.ACTION_UP){
 			switch(key.getKeyCode()){
 			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-				mainActivity.selectChannel();
+				mainActivity.controller.changePlayPause();
 				break;
 			case KeyEvent.KEYCODE_MEDIA_NEXT:
-				mainActivity.zapping(1);
+				mainActivity.controller.channelMove(1);
 				break;
 			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-				mainActivity.zapping(-1);
+				mainActivity.controller.channelMove(-1);
 				break;
 			}
 		}

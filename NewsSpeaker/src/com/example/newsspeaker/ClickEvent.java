@@ -6,16 +6,15 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class ClickEvent implements OnItemClickListener {
 
-	private MainActivity parent;
+	private MainActivity mainActivity;
 
 	public ClickEvent(MainActivity mainActivity) {
-		parent = mainActivity;
+		this.mainActivity = mainActivity;
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
-		parent.currentChannelId = pos;
-		parent.selectChannel();
+		mainActivity.controller.setChannel(pos);
 	}
 
 }

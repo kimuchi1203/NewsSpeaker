@@ -15,11 +15,12 @@ import android.widget.ListView;
 
 public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
 
-	private BTReceiver _receiver;
+	private BTReceiver receiver;
+	public Controller controller;
 
 	private boolean ttsReady;
-	private TextToSpeech mTts;
-	private ArrayAdapter<String> channelList;
+	private TextToSpeech tts;
+	public ArrayAdapter<String> channelList;
 	private ArrayList<Channel> channels;
 	public int currentChannelId;
 
@@ -28,11 +29,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		_receiver = new BTReceiver();
-		_receiver.registerSelf(this);
+		receiver = new BTReceiver();
+		receiver.registerSelf(this);
 		
 		ttsReady = false;
-		mTts = new TextToSpeech( this, this );
+		tts = new TextToSpeech( this, this );
+		// cf. http://www.techdoctranslator.com/resources/articles/articles-index/tts
 
 		channelList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 		channels = new ArrayList<Channel>();
@@ -44,18 +46,20 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 		channelList.add("Reuters plain");
 		currentChannelId = 0;
         
+		controller = new Controller(this);
+		tts.setOnUtteranceCompletedListener(controller);
 		((ListView) findViewById(R.id.listView1)).setOnItemClickListener(new ClickEvent(this));
 		showList();
 	}
 
 	@Override
 	public void onDestroy() {
-		if ( mTts != null ) {
+		if ( tts != null ) {
 			ttsReady = false;
-			mTts.stop();
-			mTts.shutdown();
+			tts.stop();
+			tts.shutdown();
 		}
-		_receiver.unregisterSelf(this);
+		receiver.unregisterSelf(this);
 		super.onDestroy();
 	}
 
@@ -68,7 +72,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 	@Override
 	public void onInit(int status) {
 		if ( status == TextToSpeech.SUCCESS ) {
-			int result = mTts.setLanguage( Locale.JAPAN );
+			int result = tts.setLanguage( Locale.JAPAN );
 			if ( result == TextToSpeech.LANG_MISSING_DATA ||
 					result == TextToSpeech.LANG_NOT_SUPPORTED ) {
 				// locale not support
@@ -78,7 +82,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 				// OK
 				ttsReady = true;
 				Log.d("MainActivity#onInit", "ttsReady = "+ttsReady);
-				mTts.speak("€”õŠ®—¹‚µ‚Ü‚µ‚½", TextToSpeech.QUEUE_FLUSH, null);
+				tts.speak("€”õŠ®—¹‚µ‚Ü‚µ‚½", TextToSpeech.QUEUE_FLUSH, null);
 			}
 		}
 		else {
@@ -87,26 +91,20 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 		}
 	}
 	
-	private void showList() {
+	public void showList() {
 		ListView lv = (ListView) findViewById(R.id.listView1);
 		lv.setAdapter(channelList);
 	}
-	
-	public void zapping(int i) {
-		showList();
-		Log.d("MainActivity#zapping", "currentChannelId "+currentChannelId+" i "+i+" -> "+(currentChannelId+i)%channelList.getCount());
-		currentChannelId = (currentChannelId+i)%channelList.getCount();
-		if(currentChannelId<0) {
-			currentChannelId = channelList.getCount() + currentChannelId;
-		}
-		if(ttsReady) mTts.speak(channelList.getItem(currentChannelId), TextToSpeech.QUEUE_FLUSH, null);
-		Log.d("MainActivity#zapping", channelList.getItem(currentChannelId));
-	}
-	
-	public void selectChannel() {
+
+	public void selectChannel(int channelId) {
 		ListView lv = (ListView) findViewById(R.id.listView1);
-		Channel channel = channels.get(currentChannelId);
+		Channel channel = channels.get(channelId);
         lv.setAdapter(channel.adapter);
-        if(ttsReady) channel.play(mTts);
+        if(ttsReady) channel.play(tts);
 	}
+
+	public void pauseTts() {
+		if(ttsReady) tts.stop();
+	}
+
 }
