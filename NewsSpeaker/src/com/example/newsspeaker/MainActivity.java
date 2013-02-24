@@ -82,7 +82,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 				// OK
 				ttsReady = true;
 				Log.d("MainActivity#onInit", "ttsReady = "+ttsReady);
-				tts.speak("€”õŠ®—¹‚µ‚Ü‚µ‚½", TextToSpeech.QUEUE_FLUSH, null);
+				tts.speak("æº–å‚™å®Œäº†ã—ã¾ã—ãŸ", TextToSpeech.QUEUE_FLUSH, null);
 			}
 		}
 		else {
