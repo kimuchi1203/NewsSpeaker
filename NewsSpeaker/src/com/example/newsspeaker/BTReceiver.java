@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 //cf. http://d.hatena.ne.jp/esmasui/20091003/1254553452
 public class BTReceiver extends BroadcastReceiver {
@@ -28,6 +29,8 @@ public class BTReceiver extends BroadcastReceiver {
 			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 				mainActivity.controller.channelMove(-1);
 				break;
+			default:
+				Log.d("BTReceiver#onReceive", "KeyEvent "+key.getKeyCode());	
 			}
 		}
 	}

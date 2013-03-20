@@ -42,8 +42,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 		channelList.add("reuters");
 		channels.add(new XMLChannel("Google News", "http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss", this));
 		channelList.add("Google News");
-		channels.add(new PlainChannel("Reuters", "http://citrus-unshiu.appspot.com/plain?stream_name=reuters", this));
-		channelList.add("Reuters plain");
 		currentChannelId = 0;
         
 		controller = new Controller(this);
@@ -98,9 +96,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
 	public void selectChannel(int channelId) {
 		ListView lv = (ListView) findViewById(R.id.listView1);
-		Channel channel = channels.get(channelId);
-        lv.setAdapter(channel.adapter);
-        if(ttsReady) channel.play(tts);
+		Log.d("MainActivity#selectChannel", channelId+" / "+channels.size()+" ready "+ttsReady);
+		if(channels.size()>channelId) {
+			Channel channel = channels.get(channelId);
+			lv.setAdapter(channel.adapter);
+			if(ttsReady) channel.play(tts);
+		}
 	}
 
 	public void pauseTts() {
