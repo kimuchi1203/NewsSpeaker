@@ -9,9 +9,14 @@ import android.widget.ArrayAdapter;
 
 public class PlainChannel extends Channel {
 
-	public PlainChannel(String name, String src, MainActivity mainActivity) {
+	public PlainChannel(String name, final String src, MainActivity mainActivity) {
 		this.adapter = new ArrayAdapter<String>(mainActivity, android.R.layout.simple_list_item_1);
-		parse(src);
+		new Thread(new Runnable(){
+		@Override
+		public void run() {
+			parse(src);
+		}
+		}).start();
 	}
 	
 	private void parse(String string) {
